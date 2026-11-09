@@ -51,22 +51,45 @@ public class RobberBehaviour : MonoBehaviour
 
     public Node.Status GoToDiamond()
     {
-        return GoToLocation(diamond.transform.position);
+        Node.Status s = GoToLocation(diamond.transform.position);
+        if (s == Node.Status.SUCCESS)
+        {
+            diamond.transform.parent = this.gameObject.transform;
+        }
+            return s;
     }
 
     public Node.Status GoToBackDoor()
     {
-        return GoToLocation(backDoor.transform.position);
+        return GoToDoor(backDoor);
     }
 
     public Node.Status GoToFrontDoor()
     {
-        return GoToLocation(frontDoor.transform.position);
+        return GoToDoor(frontDoor);
     }
 
     public Node.Status GoToVan()
     {
         return GoToLocation(van.transform.position);
+    }
+
+    public Node.Status GoToDoor(GameObject door)
+    {
+        Node.Status s = GoToLocation(door.transform.position);
+        if (s == Node.Status.SUCCESS)
+        {
+            if (!door.GetComponent<Lock>().isLocked)
+            {
+                door.SetActive(false);
+                return Node.Status.SUCCESS;
+            }
+            return Node.Status.FAILURE;
+        }
+        else
+        {
+            return s;
+        }
     }
 
     Node.Status GoToLocation(Vector3 destination)
